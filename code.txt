@@ -1,0 +1,104 @@
+<html>
+<head>
+<title> LOGIN </title>
+<style>
+	body 
+	{
+		background-image: url('floral.jpg');
+	}
+	fieldset 
+	{
+	margin-top: 200px;
+	margin-bottom: 150px;
+	margin-right: 150px;
+	margin-left: 450px;
+	border: solid;
+	background-image: url('bg.jpg');
+	}
+	input 
+	{
+	width: 150px;
+	height: 20px;
+	align-content: center;
+	}
+	
+</style>
+</head>
+<body>
+<div id="sign_in">
+<fieldset style="width:30%" >
+
+	<form method="post" action="">
+	<h2><center><strong> LOG IN FORM </strong></center></h2>
+	<h3 align="center">No Account?<a href="e_register.php"> REGISTER </a></h3><br>
+		<p align="center">USERNAME : <input type="text" name="user" size="100"><br><br>
+		PASSWORD : <input type="password" name="pass" size="100"><br><br>&nbsp &nbsp
+					<input type="submit" name="submit" value="LOGIN"> &nbsp &nbsp &nbsp
+					<input type="submit" name="update" value="FOGET PASSWORD"></p>
+</form>
+</fieldset>
+</div>
+</body>
+</html>
+
+<?php
+		if(isset($_POST['submit']))
+		{
+			if(!empty($_POST['user']) && !empty($_POST['pass']))
+			{
+				$user = $_POST['user'];
+				$pass = $_POST['pass'];
+				
+				$conn = mysqli_connect('localhost','root','','user_reg');
+				if(! $conn)
+				{
+					die("Connection Failed" .mysqli_connect_error());
+				}
+				$sq = "Select * from login where username = '$user' and password = '$pass'" ;
+				$result=mysqli_query($conn,$sq);
+				$row=mysqli_num_rows($result);
+			    
+				
+				if(!empty($row))
+				{
+					while($row = mysqli_fetch_assoc($result))
+					{
+						$dbuser = $row['username'];
+						$dbpass = $row['password'];
+					
+						if($user == $dbuser && $pass == $dbpass)
+						{
+							session_start();
+							$_session['sess_user'] = $user;
+							header("Location: e_member.php");
+						}
+						else
+						{
+							echo "Invalid username or password" ;
+						}
+					}
+				}
+				else
+				{
+					echo "Username not found";
+				}
+			}
+			else
+			{
+				echo "All fields are necessary";
+			}
+		}
+		else if(isset($_POST['update']))
+		{
+		
+		//	echo "helo";
+			session_start();
+			$_SESSION['sess_user'] =$user;
+			//header("Location : test/e_update.php");
+			?>
+			<script>
+			window.location.href="http://localhost/test/e_update.php";
+			</script>
+			<?php
+		}
+	?>
